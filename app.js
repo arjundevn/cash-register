@@ -1,84 +1,42 @@
-const billAmount = document.querySelector("#bill-amount");
-const nextButton = document.querySelector("#next-btn");
-const mainMessage = document.querySelector("#main-message");
-const revealPart = document.querySelector("#reveal-div");
-const cashGiven = document.querySelector("#cash-given");
-const checkButton = document.querySelector("#check-amount")
-const message = document.querySelector("#error-message");
-const changeTable = document.querySelector("#change-table");
-const noteArray = [2000, 500, 100, 20, 10, 5, 1];
-const numberOfNotes = document.querySelectorAll(".no-of-notes");
+let billAmount = document.querySelector(".billAmount");
+let cashAmount = document.querySelector(".cashAmount");
+let check = document.querySelector(".check");
+let td = document.querySelectorAll("td");
 
-revealPart.style.display = "none";
 
-nextButton.addEventListener("click", () => {
-
-    if (billAmount.value) {
-        if (Number(billAmount.value) > 0) {
-            revealPart.style.display = "block";
-            mainMessage.style.display = "none";
-            nextButton.style.display = "none";
-
-        } else {
-            firstMessage("That should be a valid number");
-        }
-    } else {
-        firstMessage("Sorry! you should enter a value");
+check.addEventListener('click', function (event) {
+    let NumBillAmount = Number(billAmount.value);
+    let NumCashAmount = Number(cashAmount.value);
+    for(var i =0;i<7;i++) {
+        td[i].innerHTML = 0;
     }
-
+    checkBillAndCash(NumBillAmount, NumCashAmount);
 })
 
-checkButton.addEventListener("click", () => {
-    message.style.display = "none";
-
-    const cashValue = Number(cashGiven.value);
-    const billValue = Number(billAmount.value);
-    if (billAmount.value && cashGiven.value) {
-
-        if (billValue > 0 && cashValue > 0) {
-
-            if (cashValue >= billValue) {
-                if (cashValue == billValue) {
-                    messageShown("No change needed");
-                changeTable.style.display = "none";
-
-                } else {
-                    changeTable.style.display = "block";
-                    const payBackAmount = cashValue - billValue;
-                    calculateChange(payBackAmount);
-
-                }
-
-            } else {
-                messageShown("cash should be atleast equal to the bill amount");
-                changeTable.style.display = "none";
+function checkBillAndCash(NumBillAmount, NumCashAmount) {
+    if (NumBillAmount > 0) {
+        if (NumCashAmount > 0) {
+            if (NumCashAmount > NumBillAmount) {
+                denominations((NumCashAmount - NumBillAmount))
             }
-        } else {
-            messageShown("It's not a free sale day!");
-            changeTable.style.display = "none";
+            else alert("Cash recieved by customer is less than billed amount");
         }
-
-    } else {
-        messageShown("Enter a valid amount!");
-        changeTable.style.display = "none";
+        else alert("Please enter right cash amount given by customer");
     }
-});
-
-function calculateChange(payBackAmount) {
-    for (let i = 0; i < noteArray.length; i++) {
-        const noteNumber = Math.trunc(payBackAmount / noteArray[i]);
-        payBackAmount = payBackAmount % noteArray[i]; //updating the paybackamount value after one iteration
-        numberOfNotes[i].innerText = noteNumber; // updating the noofnotes box from the first divides and truncated value
-    }
+    else alert("Please enter right bill amount");
 }
 
+function denominations(change) {
+    var changeLeft = change;
+    var notes = [2000, 500, 100, 20, 10, 5, 1];
 
-function messageShown(result) {
-    message.style.display = "block";
-    message.innerText = result;
-}
-
-function firstMessage(main) {
-    mainMessage.style.display = "block";
-    mainMessage.innerText = main;
+    for(var i = 0; i<notes.length; i++){
+        if (changeLeft >= notes[i]){
+            // console.log("Notes"+notes[i]+":"+(parseInt(changeLeft/notes[i])));
+            td[i].innerHTML = parseInt(changeLeft/notes[i]);
+            changeLeft -= (parseInt(changeLeft/notes[i]))*notes[i]
+            // console.log(changeLeft);
+        } 
+    }
+    
 }
